@@ -36,7 +36,16 @@ class Config
                     $_ENV['EXCHANGE_RATE_API_URL'] :
                     'https://api.exchangeratesapi.io/latest',
                 'use_mocked_http_client' => isset($_ENV['USE_MOCKED_HTTP_CLIENT']) && $_ENV['USE_MOCKED_HTTP_CLIENT'] == 'true' ?
-                true : false
+                true : false,
+                'eu_rate' => isset($_ENV['EU_RATE']) ?
+                    $_ENV['EU_RATE'] :
+                    0.01,
+                'non_eu_rate' => isset($_ENV['NON_EU_RATE']) ?
+                    $_ENV['NON_EU_RATE'] :
+                    0.02,
+                'app_currency' => isset($_ENV['APP_CURRENCY']) ?
+                    $_ENV['APP_CURRENCY'] :
+                    'EUR',
             ];
         }
 
