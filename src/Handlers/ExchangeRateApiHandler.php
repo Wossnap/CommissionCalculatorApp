@@ -2,7 +2,9 @@
 
 namespace Wossnap\CommissionTask\Handlers;
 
+use Exception;
 use GuzzleHttp\Client;
+use Wossnap\CommissionTask\Configs\Config;
 
 class ExchangeRateApiHandler implements ExchangeRateHandlerInterface
 {
@@ -15,8 +17,13 @@ class ExchangeRateApiHandler implements ExchangeRateHandlerInterface
 
     public function fetchRate(string $currency): ?float
     {
-        $response = $this->client->request('GET', 'https://api.exchangeratesapi.io/latest');
-        $rates = json_decode($response->getBody(), true)['rates'];
-        return $rates[$currency] ?? null;
+        try{
+            $response = $this->client->request('GET', Config::get('api_exchange_url'));
+        }catch(Exception $e){
+            //we can add in a logger here
+            throw $e;
+        }
+        $responseData = json_decode($response->getBody(), true);
+        return isset($responseData['rates'][$currency]) ? $responseData['rates'][$currency] : null;
     }
 }
