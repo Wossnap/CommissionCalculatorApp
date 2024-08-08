@@ -4,6 +4,7 @@ namespace Wossnap\CommissionTask\Configs;
 
 use DI;
 use Dotenv\Dotenv;
+use Exception;
 use GuzzleHttp\Client;
 use Wossnap\CommissionTask\Handlers\BinLookupApiHandler;
 use Wossnap\CommissionTask\Handlers\BinLookupHandlerInterface;
@@ -19,13 +20,27 @@ class Config
     public static function load()
     {
         if (self::$config === null) {
-            $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
-            $dotenv->load();
+
+            $defaultBinListURL = 'https://lookup.binlist.net/';
+            $defaultExchangeRateURL = 'https://api.exchangeratesapi.io/latest';
+            $defaultMockedClient = false;
+            try {
+                $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+                $dotenv->load();
+            } catch(Exception $e) {
+                self::$config = [
+                    'api_bin_url' => $defaultBinListURL,
+                    'api_exchange_url' => $defaultExchangeRateURL,
+                    'use_mocked_http_client' => $defaultMockedClient,
+                ];
+                return;
+            }
+
 
             self::$config = [
-                'api_bin_url' => $_ENV['BINLIST_API_URL'] ?: 'https://lookup.binlist.net/',
-                'api_exchange_url' => $_ENV['EXCHANGE_RATE_API_URL'] ?: 'https://api.exchangeratesapi.io/latest',
-                'use_mocked_http_client' => $_ENV['USE_MOCKED_HTTP_CLIENT'] == 'true' ? true : false,
+                'api_bin_url' => $_ENV['BINLIST_API_URL'] ?: $defaultBinListURL,
+                'api_exchange_url' => $_ENV['EXCHANGE_RATE_API_URL'] ?: $defaultExchangeRateURL,
+                'use_mocked_http_client' => $_ENV['USE_MOCKED_HTTP_CLIENT'] == 'true' ? true : $defaultMockedClient,
             ];
         }
 
