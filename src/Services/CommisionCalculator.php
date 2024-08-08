@@ -14,7 +14,7 @@ class CommisionCalculator
     private $binLookupHandler;
 
     public function __construct(
-        ExchangeRateHandlerInterface $exchangeRateHandler, 
+        ExchangeRateHandlerInterface $exchangeRateHandler,
         BinLookupHandlerInterface $binLookupHandler
     ) {
         $this->exchangeRateHandler = $exchangeRateHandler;
@@ -25,18 +25,18 @@ class CommisionCalculator
     {
         $alpha2Code = $this->binLookupHandler->fetchCountryAlpha2Code($bin);
         $isEu = false;
-        if($alpha2Code){
+        if($alpha2Code) {
             $isEu = CountryUtils::isEu($alpha2Code);
         }
-        
+
         $rate = $this->exchangeRateHandler->fetchRate($currency);
         $amountFixed = $amount;
-        if($currency !== 'EUR' && $rate){
-           $amountFixed = $amount / $rate;
+        if($currency !== 'EUR' && $rate) {
+            $amountFixed = $amount / $rate;
         }
 
         $commision = $amountFixed * ($isEu ? 0.01 : 0.02);//.env
 
-        return ceil($commision*100)/100;
+        return ceil($commision * 100) / 100;
     }
 }

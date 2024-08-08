@@ -17,9 +17,9 @@ class ExchangeRateApiHandler implements ExchangeRateHandlerInterface
 
     public function fetchRate(string $currency): ?float
     {
-        try{
+        try {
             $response = $this->client->request('GET', Config::get('api_exchange_url'));
-        }catch(Exception $e){
+        } catch(Exception $e) {
             //we can add in a logger here
             throw $e;
         }

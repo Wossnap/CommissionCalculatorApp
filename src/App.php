@@ -16,7 +16,7 @@ foreach (explode("\n", file_get_contents($argv[1])) as $row) {
     if (empty($row)) {
         break;
     }
-    
+
     $transaction = json_decode($row, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
         echo "Incorrect Format!\n";

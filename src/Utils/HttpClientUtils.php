@@ -14,7 +14,7 @@ class HttpClientUtils
         $header = [
             'Content-Type' => 'application/json; charset=utf-8'
         ];
-        
+
         $rateResponse = new Response(200, $header, '{
            "result":"success",
            "provider":"https://www.exchangerate-api.com",
@@ -191,7 +191,7 @@ class HttpClientUtils
               "ZWL":14.6681
            }
         }');
-        
+
         $mock = new MockHandler([
             new Response(200, $header, '{
                 "number":{
@@ -294,7 +294,7 @@ class HttpClientUtils
             }'),//4745030
             $rateResponse,
         ]);
-        
+
         $handlerStack = HandlerStack::create($mock);
         return new Client(['handler' => $handlerStack]);
     }

@@ -17,13 +17,13 @@ class BinLookupApiHandler implements BinLookupHandlerInterface
 
     public function fetchCountryAlpha2Code(string $bin): ?string
     {
-        try{
+        try {
             $response = $this->client->request('GET', Config::get('api_bin_url') . $bin);
-        }catch(Exception $e){
+        } catch(Exception $e) {
             //we can add in a logger here
             throw $e;
         }
         $binData = json_decode($response->getBody());
         return $binData->country?->alpha2 ?? null;
     }
-}   
+}

@@ -25,6 +25,7 @@ class Config
             self::$config = [
                 'api_bin_url' => $_ENV['BINLIST_API_URL'] ?: 'https://lookup.binlist.net/',
                 'api_exchange_url' => $_ENV['EXCHANGE_RATE_API_URL'] ?: 'https://api.exchangeratesapi.io/latest',
+                'use_mocked_http_client' => $_ENV['USE_MOCKED_HTTP_CLIENT'] == 'true' ? true : false,
             ];
         }
 
@@ -40,8 +41,9 @@ class Config
     public static function containerDefinitions()
     {
         return [
-                // Client::class => DI\create(Client::class),
-                Client::class => HttpClientUtils::getMockedClient(),//Used mocked client as the bin lookup & exchange service were not reliable
+                Client::class => self::get('use_mocked_http_client') ?
+                    HttpClientUtils::getMockedClient() :
+                    DI\create(Client::class),//Used mocked client as the bin lookup & exchange service were not reliable
                 BinLookupHandlerInterface::class => DI\autowire(BinLookupApiHandler::class),
                 ExchangeRateHandlerInterface::class => DI\autowire(ExchangeRateApiHandler::class),
                 CommisionCalculator::class => DI\autowire(CommisionCalculator::class)
@@ -50,5 +52,5 @@ class Config
                         DI\get(BinLookupHandlerInterface::class)
                     ),
             ];
-    }                       
+    }
 }
