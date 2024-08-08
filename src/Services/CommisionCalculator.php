@@ -21,12 +21,22 @@ class CommisionCalculator
         $this->binLookupHandler = $binLookupHandler;
     }
 
-    public function calcualte(int $bin, float $amount, string $currency): float
+    public function calculate(string $bin, float $amount, string $currency): float
     {
         $alpha2Code = $this->binLookupHandler->fetchCountryAlpha2Code($bin);
-        $isEu = CountryUtils::isEu($alpha2Code);
+        $isEu = false;
+        if($alpha2Code){
+            $isEu = CountryUtils::isEu($alpha2Code);
+        }
+        
         $rate = $this->exchangeRateHandler->fetchRate($currency);
-        $amountFixed = $currency === 'EUR' ? $amount : $amount / $rate;
-        return $amountFixed * ($isEu ? 0.01 : 0.02);//.env
+        $amountFixed = $amount;
+        if($currency !== 'EUR' && $rate){
+           $amountFixed = $amount / $rate;
+        }
+
+        $commision = $amountFixed * ($isEu ? 0.01 : 0.02);//.env
+
+        return ceil($commision*100)/100;
     }
 }
