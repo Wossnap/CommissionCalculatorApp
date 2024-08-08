@@ -21,26 +21,22 @@ class Config
     {
         if (self::$config === null) {
 
-            $defaultBinListURL = 'https://lookup.binlist.net/';
-            $defaultExchangeRateURL = 'https://api.exchangeratesapi.io/latest';
-            $defaultMockedClient = false;
             try {
                 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
                 $dotenv->load();
             } catch(Exception $e) {
-                self::$config = [
-                    'api_bin_url' => $defaultBinListURL,
-                    'api_exchange_url' => $defaultExchangeRateURL,
-                    'use_mocked_http_client' => $defaultMockedClient,
-                ];
-                return;
             }
 
 
             self::$config = [
-                'api_bin_url' => $_ENV['BINLIST_API_URL'] ?: $defaultBinListURL,
-                'api_exchange_url' => $_ENV['EXCHANGE_RATE_API_URL'] ?: $defaultExchangeRateURL,
-                'use_mocked_http_client' => $_ENV['USE_MOCKED_HTTP_CLIENT'] == 'true' ? true : $defaultMockedClient,
+                'api_bin_url' => isset($_ENV['BINLIST_API_URL']) ?
+                    $_ENV['BINLIST_API_URL'] :
+                    'https://lookup.binlist.net/',
+                'api_exchange_url' => isset($_ENV['EXCHANGE_RATE_API_URL']) ?
+                    $_ENV['EXCHANGE_RATE_API_URL'] :
+                    'https://api.exchangeratesapi.io/latest',
+                'use_mocked_http_client' => isset($_ENV['USE_MOCKED_HTTP_CLIENT']) && $_ENV['USE_MOCKED_HTTP_CLIENT'] == 'true' ?
+                true : false
             ];
         }
 
